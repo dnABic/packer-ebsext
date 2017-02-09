@@ -182,6 +182,11 @@ func (b *Builder) Run(ui packer.Ui, hook packer.Hook, cache packer.Cache) (packe
 			ForceDeleteSnapshot: b.config.AMIForceDeleteSnapshot,
 			AMIName:             b.config.AMIName,
 		},
+		&stepSnapshotEBSVolumes{
+			VolumeRunTags:    b.config.VolumeRunTags,
+			Ctx:              b.config.ctx,
+			VolumeDoSnapshot: b.config.VolumeDoSnapshot,
+		},
 		&stepCreateAMI{},
 		&stepCreateEncryptedAMICopy{},
 		&awscommon.StepAMIRegionCopy{
