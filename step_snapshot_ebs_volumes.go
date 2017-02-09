@@ -51,8 +51,10 @@ func (s *stepSnapshotEBSVolumes) Run(state multistep.StateBag) multistep.StepAct
 			return multistep.ActionHalt
 		}
 
+		var snapshotIdp *string
 		snapshotId := *createSnapResp.SnapshotId
-		snapshotIds = append(snapshotIds, *createSnapResp.SnapshotId)
+		snapshotIdp = &createSnapResp.SnapshotId
+		snapshotIds = append(snapshotIds, *snapshotIdp)
 		ui.Say(fmt.Sprintf("Creating snapshot of volume %s with ID %s", v, snapshotId))
 
 		stateChange := awscommon.StateChangeConf{
