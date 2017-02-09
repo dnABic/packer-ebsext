@@ -39,7 +39,7 @@ func (s *stepSnapshotEBSVolumes) Run(state multistep.StateBag) multistep.StepAct
 		return multistep.ActionContinue
 	}
 
-	var snapshotIds []string
+	var snapshotIds []*string
 	for _, v := range volumeIds {
 		createSnapResp, err := ec2conn.CreateSnapshot(&ec2.CreateSnapshotInput{
 			VolumeId: v,
