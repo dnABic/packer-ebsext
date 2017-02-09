@@ -22,9 +22,9 @@ func (s *stepCreateAMI) Run(state multistep.StateBag) multistep.StepAction {
 	// Create the image
 	ui.Say(fmt.Sprintf("Creating the AMI: %s", config.AMIName))
 	createOpts := &ec2.CreateImageInput{
-		InstanceId:          instance.InstanceId,
-		Name:                &config.AMIName,
-		BlockDeviceMappings: config.BlockDevices.BuildAMIDevices(),
+		InstanceId: instance.InstanceId,
+		Name:       &config.AMIName,
+		//BlockDeviceMappings: config.BlockDevices.BuildAMIDevices(),
 	}
 
 	createResp, err := ec2conn.CreateImage(createOpts)
