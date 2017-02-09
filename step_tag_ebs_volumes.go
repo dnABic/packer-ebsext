@@ -1,4 +1,4 @@
-package ebs
+package ebsext
 
 import (
 	"fmt"
