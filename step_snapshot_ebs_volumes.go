@@ -39,7 +39,7 @@ func (s *stepSnapshotEBSVolumes) Run(state multistep.StateBag) multistep.StepAct
 		return multistep.ActionContinue
 	}
 
-	var snapshotIdList []string
+	var snapshotIds []string
 	for _, v := range volumeIds {
 		createSnapResp, err := ec2conn.CreateSnapshot(&ec2.CreateSnapshotInput{
 			VolumeId: v,
@@ -52,7 +52,7 @@ func (s *stepSnapshotEBSVolumes) Run(state multistep.StateBag) multistep.StepAct
 		}
 
 		snapshotId := *createSnapResp.SnapshotId
-		snapshotIdList = append(snapshotIdList, snapshotId)
+		snapshotIds = append(snapshotIds, snapshotId)
 		ui.Say(fmt.Sprintf("Creating snapshot of volume %s with ID %s", v, snapshotId))
 
 		stateChange := awscommon.StateChangeConf{
@@ -99,7 +99,7 @@ func (s *stepSnapshotEBSVolumes) Run(state multistep.StateBag) multistep.StepAct
 	}
 
 	_, err = ec2conn.CreateTags(&ec2.CreateTagsInput{
-		Resources: *snapshotIdList,
+		Resources: &snapshotIds,
 		Tags:      tags,
 	})
 
