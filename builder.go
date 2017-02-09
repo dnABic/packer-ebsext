@@ -30,6 +30,7 @@ type Config struct {
 	awscommon.BlockDevices `mapstructure:",squash"`
 	awscommon.RunConfig    `mapstructure:",squash"`
 	VolumeRunTags          map[string]string `mapstructure:"run_volume_tags"`
+	VolumeDoSnapshot       bool              `mapstructure:"do_volume_snapshot"`
 
 	ctx interpolate.Context
 }
