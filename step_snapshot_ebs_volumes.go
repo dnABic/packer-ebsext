@@ -99,7 +99,7 @@ func (s *stepSnapshotEBSVolumes) Run(state multistep.StateBag) multistep.StepAct
 	}
 
 	_, err = ec2conn.CreateTags(&ec2.CreateTagsInput{
-		Resources: &snapshotIds,
+		Resources: snapshotIds,
 		Tags:      tags,
 	})
 
