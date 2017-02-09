@@ -1,6 +1,7 @@
 package ebsext
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/aws/aws-sdk-go/service/ec2"
@@ -41,7 +42,7 @@ func (s *stepSnapshotEBSVolumes) Run(state multistep.StateBag) multistep.StepAct
 	var snapshotIdList []string
 	for _, v := range volumeIds {
 		createSnapResp, err := ec2conn.CreateSnapshot(&ec2.CreateSnapshotInput{
-			VolumeId: &v,
+			VolumeId: v,
 		})
 		if err != nil {
 			err := fmt.Errorf("Error while creating snapshot of EBS Volume %s: %s", v, err)
@@ -98,7 +99,7 @@ func (s *stepSnapshotEBSVolumes) Run(state multistep.StateBag) multistep.StepAct
 	}
 
 	_, err = ec2conn.CreateTags(&ec2.CreateTagsInput{
-		Resources: snapshotIdList,
+		Resources: *snapshotIdList,
 		Tags:      tags,
 	})
 
