@@ -31,6 +31,7 @@ type Config struct {
 	awscommon.RunConfig    `mapstructure:",squash"`
 	VolumeRunTags          map[string]string `mapstructure:"run_volume_tags"`
 	VolumeDoSnapshot       bool              `mapstructure:"do_volume_snapshot"`
+	EbsVolumeSnapshot      []string          `mapstructure:"ebs_volume_snapshot"`
 
 	ctx interpolate.Context
 }
@@ -186,6 +187,7 @@ func (b *Builder) Run(ui packer.Ui, hook packer.Hook, cache packer.Cache) (packe
 			VolumeRunTags:    b.config.VolumeRunTags,
 			Ctx:              b.config.ctx,
 			VolumeDoSnapshot: b.config.VolumeDoSnapshot,
+			EbsVolumeSnapshot      b.config.EbsVolumeSnapshot,
 		},
 		&stepCreateAMI{},
 		&stepCreateEncryptedAMICopy{},

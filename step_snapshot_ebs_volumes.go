@@ -13,9 +13,19 @@ import (
 )
 
 type stepSnapshotEBSVolumes struct {
-	VolumeRunTags    map[string]string
-	Ctx              interpolate.Context
-	VolumeDoSnapshot bool
+	VolumeRunTags     map[string]string
+	Ctx               interpolate.Context
+	VolumeDoSnapshot  bool
+	EbsVolumeSnapshot []string
+}
+
+func matchDevice(deviceName string, ebsDeviceNames []string) bool {
+	for _, name := range ebsDeviceNames {
+		if name == deviceName {
+			return true
+		}
+	}
+	return false
 }
 
 func (s *stepSnapshotEBSVolumes) Run(state multistep.StateBag) multistep.StepAction {
@@ -24,13 +34,15 @@ func (s *stepSnapshotEBSVolumes) Run(state multistep.StateBag) multistep.StepAct
 	sourceAMI := state.Get("source_image").(*ec2.Image)
 	ui := state.Get("ui").(packer.Ui)
 
-	if s.VolumeDoSnapshot == false {
+	if s.VolumeDoSnapshot == false || len(s.EbsVolumeSnapshot) == 0 {
 		return multistep.ActionContinue
 	}
 
 	volumeIds := make([]*string, 0)
 	for _, v := range instance.BlockDeviceMappings {
-		if ebs := v.Ebs; ebs != nil {
+		ui.Say(fmt.Sprintf("DEBUG device %s", v.DeviceName))
+		if ebs := v.Ebs; ebs != nil && matchDevice(v.DeviceName, EbsVolumeSnapshot) {
+			ui.Say(fmt.Sprintf("DEBUG preparing for snapshot device %s", v.DeviceName))
 			volumeIds = append(volumeIds, ebs.VolumeId)
 		}
 	}
