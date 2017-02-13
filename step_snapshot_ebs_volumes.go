@@ -41,7 +41,7 @@ func (s *stepSnapshotEBSVolumes) Run(state multistep.StateBag) multistep.StepAct
 	volumeIds := make([]*string, 0)
 	for _, v := range instance.BlockDeviceMappings {
 		ui.Say(fmt.Sprintf("DEBUG device %s", v.DeviceName))
-		if ebs := v.Ebs; ebs != nil && matchDevice(v.DeviceName, s.SnapshotEbsVolume) {
+		if ebs := v.Ebs; ebs != nil && matchDevice(*v.DeviceName, s.SnapshotEbsVolume) {
 			ui.Say(fmt.Sprintf("DEBUG preparing for snapshot device %s", v.DeviceName))
 			volumeIds = append(volumeIds, ebs.VolumeId)
 		}
