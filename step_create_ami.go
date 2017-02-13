@@ -7,6 +7,7 @@ import (
 	"github.com/mitchellh/multistep"
 	awscommon "github.com/mitchellh/packer/builder/amazon/common"
 	"github.com/mitchellh/packer/packer"
+	"time"
 )
 
 type stepCreateAMI struct {
@@ -19,12 +20,20 @@ func (s *stepCreateAMI) Run(state multistep.StateBag) multistep.StepAction {
 	instance := state.Get("instance").(*ec2.Instance)
 	ui := state.Get("ui").(packer.Ui)
 
+	for _, a := range config.BlockDevices.LaunchMappings {
+		ui.Say(fmt.Sprintf("DEBUG DEvice name: %s", a.DeviceName))
+		ui.Say(fmt.Sprintf("DEBUG volume type: %s", a.VolumeType))
+	}
+
+	ui.Say("Sleep 60 seconds...")
+	time.Sleep(60 * time.Second)
 	// Create the image
 	ui.Say(fmt.Sprintf("Creating the AMI: %s", config.AMIName))
 	createOpts := &ec2.CreateImageInput{
-		InstanceId: instance.InstanceId,
-		Name:       &config.AMIName,
-		//BlockDeviceMappings: config.BlockDevices.BuildAMIDevices(),
+		InstanceId:          instance.InstanceId,
+		Name:                &config.AMIName,
+		BlockDeviceMappings: config.BlockDevices.BuildAMIDevices(),
+		//BlockDeviceMappings: mika,
 	}
 
 	createResp, err := ec2conn.CreateImage(createOpts)
